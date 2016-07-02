@@ -5,9 +5,9 @@ CREATE TABLE public.users
   first_name character varying(30),
   last_name character varying(30),
   email character varying(30),
-  admin boolean,
+  admin boolean DEFAULT FALSE,
   last_login time without time zone,
-  is_active boolean,
+  is_active boolean DEFAULT TRUE,
   CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 
