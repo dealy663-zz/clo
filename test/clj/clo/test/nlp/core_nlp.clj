@@ -1,2 +1,3 @@
-;(ns clo.test.nlp.core-nlp
-;  [clojure.test :refer :all])
+(ns clo.test.nlp.core-nlp
+  (:require [clojure.test :refer :all]
+            [edu.stan]))

@@ -1,6 +1,5 @@
 CREATE SCHEMA IF NOT EXISTS annapurna;
 
-
 CREATE TABLE annapurna.anna
 (
   user_ref bigint NOT NULL,
