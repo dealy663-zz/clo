@@ -19,14 +19,14 @@
   (jdbc/with-db-transaction
     [t-conn *db*]
     (jdbc/db-set-rollback-only! t-conn)
-    (let [result (db/create-user2!
-                   t-conn
-                   {:username   "ssmith"
-                    :first_name "Sam"
-                    :last_name  "Smith"
-                    :email      "sam.smith@example.com"})]
+    (let [result (:id (db/create-user2!
+                        t-conn
+                        {:username   "ssmith"
+                         :first_name "Sam"
+                         :last_name  "Smith"
+                         :email      "sam.smith@example.com"}))]
 
-      (is (= {:id         (:id result)
+      (is (= {:id         result
               :username   "ssmith"
               :first_name "Sam"
               :last_name  "Smith"
@@ -34,4 +34,4 @@
               :admin      false
               :last_login nil
               :is_active  true}
-             (db/get-user t-conn {:id (:id result)}))))))
+             (db/get-user t-conn {:id result}))))))
