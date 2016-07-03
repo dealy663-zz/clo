@@ -4,12 +4,12 @@ INSERT INTO users
 (username, first_name, last_name, email, pass)
 VALUES (:username, :first_name, :last_name, :email, :pass)
 
--- :name create-user2! :! :1
+-- :name create-user2! :? :1
 -- :doc creates a new user record, returning the assigned id
 WITH id_row AS (
   INSERT INTO users
-    (username, first_name, last_name, email, pass)
-  VALUES (:username, :first_name, :last_name, :email, :pass) RETURNING id`
+    (username, first_name, last_name, email)
+  VALUES (:username, :first_name, :last_name, :email) RETURNING id
 )
 SELECT id FROM id_row
 

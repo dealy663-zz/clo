@@ -28,6 +28,7 @@
                  [luminus-nrepl "0.1.4"]
                  [luminus-migrations "0.2.2"]
                  [conman "0.5.8"]
+                 [edu.stanford.nlp/stanford-corenlp "3.6.0"]
                  [org.postgresql/postgresql "9.4-1206-jdbc4"]
                  [org.webjars/webjars-locator-jboss-vfs "0.1.0"]
                  [luminus-immutant "0.2.0"]]
@@ -78,17 +79,17 @@
       :pretty-print false
       :closure-warnings
       {:externs-validation :off :non-standard-jsdoc :off}}}}}
-  
+
   :figwheel
   {:http-server-root "public"
    :nrepl-port 7002
    :css-dirs ["resources/public/css"]
    :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
-  
+
 
   :profiles
   {:uberjar {:omit-source true
-             
+
              :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
              :aot :all
              :uberjar-name "clo.jar"
@@ -110,7 +111,7 @@
                                  [lein-doo "0.1.6"]
                                  [lein-figwheel "0.5.4-4"]
                                  [org.clojure/clojurescript "1.9.92"]]
-                  
+
                   :doo {:build "test"}
                   :source-paths ["env/dev/clj" "test/clj"]
                   :resource-paths ["env/dev/resources"]
