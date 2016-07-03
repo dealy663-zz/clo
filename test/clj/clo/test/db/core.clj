@@ -19,7 +19,7 @@
   (jdbc/with-db-transaction
     [t-conn *db*]
     (jdbc/db-set-rollback-only! t-conn)
-    (let [result (:id (db/create-user2!
+    (let [result (:id (db/create-user!
                         t-conn
                         {:username   "ssmith"
                          :first_name "Sam"

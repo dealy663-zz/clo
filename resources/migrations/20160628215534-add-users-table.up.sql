@@ -16,4 +16,7 @@ CREATE INDEX ix_uname
   USING btree
   (username COLLATE pg_catalog."default");
 
+ALTER TABLE public.users
+  ADD CONSTRAINT unq_uname UNIQUE(username);
+
 
