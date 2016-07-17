@@ -59,7 +59,6 @@
   (doall (map show-tokens (.get sentence CoreAnnotations$TokensAnnotation)))
   (let [dependencies  (.get sentence SemanticGraphCoreAnnotations$CollapsedDependenciesAnnotation)
         first-root    (.getFirstRoot dependencies)]
-    ;    (doall (map show-edge-info (.getOutEdgesSorted dependencies first-root)))
-    ))
+        (doall (map show-edge-info (.getOutEdgesSorted dependencies first-root)))))
 
 (doall (map get-annotations sentences))
