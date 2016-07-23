@@ -7,35 +7,54 @@
   (:import (java.util Properties)
            (edu.stanford.nlp.pipeline StanfordCoreNLP RegexNERAnnotator TokensRegexAnnotator Annotation)
            (java.text SimpleDateFormat)
-           (edu.stanford.nlp.ling CoreAnnotations CoreAnnotations$DocDateAnnotation CoreAnnotations$SentencesAnnotation CoreAnnotations$TextAnnotation CoreAnnotations$StackedNamedEntityTagAnnotation CoreAnnotations$PartOfSpeechAnnotation CoreAnnotations$LemmaAnnotation CoreAnnotations$TokensAnnotation)
+           (edu.stanford.nlp.ling CoreAnnotations CoreAnnotations$DocDateAnnotation CoreAnnotations$SentencesAnnotation
+                                  CoreAnnotations$TextAnnotation CoreAnnotations$StackedNamedEntityTagAnnotation
+                                  CoreAnnotations$PartOfSpeechAnnotation CoreAnnotations$LemmaAnnotation
+                                  CoreAnnotations$TokensAnnotation)
            (edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$CollapsedDependenciesAnnotation)))
+(defn nlp-setup
+  [f]
+  (mount/start
+    #'clo.config/env
+    #'clo.db.core/*db*)
+  (migrations/migrate ["migrate"] (select-keys env [:database-url]))
+
+  (def props (Properties.))
+  (.put props "annotators", "tokenize, ssplit, pos, lemma, ner, regexner, parse, dcoref")
+  (def pipeline (StanfordCoreNLP. props))
+
+  ;; These should be explained later in the tutorial
+  ;(.addAnnotator pipeline
+  ;               (RegexNERAnnotator. "some RegexNer structured file"))
+  ;(.addAnnotator pipeline
+  ;               (TokensRegexAnnotator. “some tokenRegex structured file”))
+
+  (def formatter (SimpleDateFormat. "yyyy-MM-dd"))
+  (def currentTime (.format formatter (System/currentTimeMillis)))
+  (def inputText "How do I configure the Named Entity Recognizer in coreNLP? What is the torque spec for a lug nut on a
+                  2000 BMW E39? How do I replace the fan on a Macbook Pro A1398?")
+  (def document (Annotation. inputText))
+  (.set document CoreAnnotations$DocDateAnnotation currentTime)
+  (.annotate pipeline document)
+  (def sentences (.get document CoreAnnotations$SentencesAnnotation))
+
+  (f)
+
+  ;; teardown logic
+  )
 
 (use-fixtures
   :once
-  (fn [f]
-    (mount/start
-      #'clo.config/env
-      #'clo.db.core/*db*)
-    (migrations/migrate ["migrate"] (select-keys env [:database-url]))
-    (f)))
+  nlp-setup
+  ;(fn [f]
+  ;  (mount/start
+  ;    #'clo.config/env
+  ;    #'clo.db.core/*db*)
+  ;  (migrations/migrate ["migrate"] (select-keys env [:database-url]))
+  ;  (f))
+  )
 
-(def props (Properties.))
-(.put props  "annotators", "tokenize, ssplit, pos, lemma, ner, regexner, parse, dcoref")
-(def pipeline (StanfordCoreNLP. props))
 
-;; These should be explained later in the tutorial
-;(.addAnnotator pipeline
-;               (RegexNERAnnotator. "some RegexNer structured file"))
-;(.addAnnotator pipeline
-;               (TokensRegexAnnotator. “some tokenRegex structured file”))
-
-(def formatter (SimpleDateFormat. "yyyy-MM-dd"))
-(def currentTime (.format formatter (System/currentTimeMillis)))
-(def inputText "some text to evaluate")
-(def document (Annotation. inputText))
-(.set document CoreAnnotations$DocDateAnnotation currentTime)
-(.annotate pipeline document)
-(def sentences (.get document CoreAnnotations$SentencesAnnotation))
 
 (defn show-tokens
   [token]
@@ -43,7 +62,8 @@
         ner   (.getString token CoreAnnotations$StackedNamedEntityTagAnnotation)
         pos   (.get token CoreAnnotations$PartOfSpeechAnnotation)
         lemma (.get token CoreAnnotations$LemmaAnnotation)]
-    (log/debug (str "text=" text "; NER=" ner "; POS=" pos "; LEMMA=" lemma))))
+    (log/debug (str "text=" text "; NER=" ner "; POS=" pos "; LEMMA=" lemma))
+    {:text text :ner ner :pos pos :lemma lemma}))
 
 (defn show-edge-info
   [edge]
@@ -61,4 +81,7 @@
         first-root    (.getFirstRoot dependencies)]
         (doall (map show-edge-info (.getOutEdgesSorted dependencies first-root)))))
 
-(doall (map get-annotations sentences))
+
+
+(deftest test-nlp
+  (doall (map get-annotations sentences)))
