@@ -1,14 +1,18 @@
 (ns clo.middleware
   (:require [clo.env :refer [defaults]]
             [clojure.tools.logging :as log]
-            [clo.layout :refer [*app-context* error-page]]
+            [clo.layout :refer [*app-context* error-page *identity*]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.webjars :refer [wrap-webjars]]
             [ring.middleware.format :refer [wrap-restful-format]]
             [clo.config :refer [env]]
             [ring.middleware.flash :refer [wrap-flash]]
             [immutant.web.middleware :refer [wrap-session]]
-            [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
+            [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
+            [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+            [buddy.auth.backends.session :refer [session-backend]]
+            [buddy.auth.accessrules :refer [restrict]]
+            [buddy.auth :refer [authenticated?]])
   (:import [javax.servlet ServletContext]))
 
 (defn wrap-context [handler]
@@ -64,3 +68,15 @@
             (dissoc :session)))
       wrap-context
       wrap-internal-error))
+
+(defn wrap-identity [handler]
+  (fn [request]
+    (binding [*identity* (get-in request [:session :identity])]
+      (handler request))))
+
+(defn wrap-auth [handler]
+  (let [backend (session-backend)]
+    (-> handler
+        wrap-identity
+        (wrap-authentication backend)
+        (wrap-authorization backend))))

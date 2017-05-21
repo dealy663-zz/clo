@@ -15,19 +15,24 @@
             Timestamp
             PreparedStatement]))
 
+;; Here we're pre-declaring all functions that Cursive can't resolve due to their being created at runtime, or by
+;; external macros and such.
+(declare create-user! get-user)
+
+(declare ^:dynamic *db*)
 (defstate ^:dynamic *db*
           :start (conman/connect!
                    {:init-size  1
                     :min-idle   1
                     :max-idle   4
                     :max-active 32
-                    :jdbc-url   (env :database-url)})
+                    :jdbc-url   (:database-url env)})
           :stop (conman/disconnect! *db*))
 
 (conman/bind-connection *db* "sql/queries.sql")
 
 (defn to-date [sql-date]
-  (-> sql-date (.getTime) (java.util.Date.)))
+  (-> sql-date (.getTime) (Date.)))
 
 (extend-protocol jdbc/IResultSetReadColumn
   Date

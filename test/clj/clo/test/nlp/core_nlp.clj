@@ -11,7 +11,8 @@
                                   CoreAnnotations$TextAnnotation CoreAnnotations$StackedNamedEntityTagAnnotation
                                   CoreAnnotations$PartOfSpeechAnnotation CoreAnnotations$LemmaAnnotation
                                   CoreAnnotations$TokensAnnotation)
-           (edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$CollapsedDependenciesAnnotation)))
+           (edu.stanford.nlp.semgraph SemanticGraphCoreAnnotations$CollapsedDependenciesAnnotation)
+           (java.io PrintWriter ByteArrayOutputStream)))
 (defn nlp-setup
   [f]
   (mount/start
@@ -21,6 +22,7 @@
 
   (def props (Properties.))
   (.put props "annotators", "tokenize, ssplit, pos, lemma, ner, regexner, parse, dcoref")
+  (.put props "ner.model", "corenlp/stanford-ner-2015-12-09-2/classifiers/english.all.3class.distsim.crf.ser.gz")
   (def pipeline (StanfordCoreNLP. props))
 
   ;; These should be explained later in the tutorial
@@ -35,7 +37,10 @@
                   2000 BMW E39? How do I replace the fan on a Macbook Pro A1398?")
   (def document (Annotation. inputText))
   (.set document CoreAnnotations$DocDateAnnotation currentTime)
-  (.annotate pipeline document)
+
+  ;(def annotation (.annotate pipeline (Annotation. inputText)))
+  ;(def stream (ByteArrayOutputStream.))
+  ;(.prettyPrint pipeline annotation (PrintWriter. stream))
   (def sentences (.get document CoreAnnotations$SentencesAnnotation))
 
   (f)
@@ -80,7 +85,6 @@
   (let [dependencies  (.get sentence SemanticGraphCoreAnnotations$CollapsedDependenciesAnnotation)
         first-root    (.getFirstRoot dependencies)]
         (doall (map show-edge-info (.getOutEdgesSorted dependencies first-root)))))
-
 
 
 (deftest test-nlp

@@ -1,0 +1,2 @@
+{:profiles/dev  {:env {:database-url "jdbc:postgresql:5433//localhost/clo_v1?user=cloadmin&password=gpsadmin"}}
+ :profiles/test {:env {:database-url "jdbc:postgresql:5433//localhost/test_clo_v1?user=cloadmin&password=gpsadmin"}}}

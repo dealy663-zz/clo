@@ -1,7 +1,7 @@
 (defproject clo "0.1.0-SNAPSHOT"
 
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Ask Clo - project for managing questions and links to their answeres"
+  :url "http://www.grandprixsw.com/clo"
 
   :dependencies [[luminus-log4j "0.1.3"]
                  [cljs-ajax "0.5.8"]
@@ -32,7 +32,10 @@
                  [edu.stanford.nlp/stanford-corenlp "3.6.0" :classifier "models"]
                  [org.postgresql/postgresql "9.4-1206-jdbc4"]
                  [org.webjars/webjars-locator-jboss-vfs "0.1.0"]
-                 [luminus-immutant "0.2.0"]]
+                 [luminus-immutant "0.2.0"]
+                 [buddy "1.3.0"]
+                 [metosin/compojure-api "1.1.10"]
+                 [http.async.client "1.2.0"]]
 
   :min-lein-version "2.0.0"
 
