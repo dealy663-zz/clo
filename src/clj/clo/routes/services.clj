@@ -6,8 +6,11 @@
             [schema.core :as s]))
 
 (s/defschema UserRegistration
-  {:id             String
-   :pass           String
+  {:user-name      String
+   :first-name     String
+   :last-name      String
+   :email          String
+   :password       String
    :pass-confirm   String})
 
 (s/defschema Result
@@ -17,18 +20,18 @@
 
 (declare service-routes)
 (defapi service-routes
-        {:swagger {:ui "/swagger-ui"
+        {:swagger {:ui   "/swagger-ui"
                    :spec "/swagger.json"
-                   :data {:info {:version "1.0.0"
-                                 :title "AskClo API"
-                                 :description "Public Services"}}}})
-        ;(POST "/register" req
-        ;      :return Result
-        ;      :body [user UserRegistration]
-        ;      :summary "register a new user"
-        ;      (auth/register! req user))
-        ;
-        ;(POST "/login" req
+                   :data {:info {:version     "1.0.0"
+                                 :title       "AskClo API"
+                                 :description "Public Services"}}}}
+        (POST "/register" req
+                :return Result
+                :body [user UserRegistration]
+                :summary "register a new user"
+                (auth/register! req user)))
+
+;(POST "/login" req
         ;      :header-params [authorization :- String]
         ;      :summary "log in the user and create a session"
         ;      :return Result

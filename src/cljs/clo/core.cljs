@@ -6,7 +6,9 @@
             [goog.history.EventType :as HistoryEventType]
             [markdown.core :refer [md->html]]
             [clo.ajax :refer [load-interceptors!]]
-            [ajax.core :refer [GET POST]])
+            [ajax.core :refer [GET POST]]
+            [clo.components.common :as c]
+            [clo.components.registration :as reg])
   (:import goog.History))
 
 (defn nav-link [uri title page collapsed?]
@@ -54,8 +56,14 @@
   {:home #'home-page
    :about #'about-page})
 
+;(defn page []
+;  [(pages (session/get :page))])
+
 (defn page []
-  [(pages (session/get :page))])
+  [:div
+   ;;registration modal test
+   [reg/registration-form]
+   [(pages (session/get :page))]])
 
 ;; -------------------------
 ;; Routes
@@ -89,6 +97,5 @@
 
 (defn init! []
   (load-interceptors!)
-  (fetch-docs!)
   (hook-browser-navigation!)
   (mount-components))

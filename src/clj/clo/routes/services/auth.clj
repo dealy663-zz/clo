@@ -25,10 +25,14 @@
          :message (str "server error occurred while adding the user " (:user-name user)
                        ": "(.getMessage e))}))))
 
-(defn register! [{:keys [session]} user]
+(defn register!
   "Registers a new user with the system. If successful the new user info will be added to the session object.
 
+   session-map    A map with the session data
+   user           A map with the following :password :user-name :first-name :last-name :email
    If successful, returns the numeric user-id that was created for the new user."
+  [{:keys [session]} user]
+
   (if-let [errors (registration-errors user)]
     (response/precondition-failed {:result :error
                                    :validation-errors errors})
