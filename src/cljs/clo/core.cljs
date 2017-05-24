@@ -11,6 +11,16 @@
             [clo.components.registration :as reg])
   (:import goog.History))
 
+(defn user-menu []
+  (if-let [id (session/get :identity)]
+    [:ul.nav.navbar-nav.pull-xs-right
+     [:li.nav-item
+      [:a.dropdown-item.btn
+       {:on-click #(session/remove! :identity)}
+       [:i.fa.fa-user] " " id " | sign out"]]]
+    [:ul.nav.navbar-nav.pull-xs-right
+     [:li.nav-item [reg/registration-button]]]))
+
 (defn nav-link [uri title page collapsed?]
   [:li.nav-item
    {:class (when (= page (session/get :page)) "active")}
@@ -29,7 +39,8 @@
         [:a.navbar-brand {:href "#/"} "Ask" [:em "Clo"]]
         [:ul.nav.navbar-nav
          [nav-link "#/" "Home" :home collapsed?]
-         [nav-link "#/about" "About" :about collapsed?]]]])))
+         [nav-link "#/about" "About" :about collapsed?]]]
+       [user-menu]])))
 
 (defn about-page []
   [:div.container
@@ -59,10 +70,17 @@
 ;(defn page []
 ;  [(pages (session/get :page))])
 
+;(defn page []
+;  [:div
+;   [(pages (session/get :page))]])
+
+(defn modal []
+  (when-let [session-modal (session/get :modal)]
+    [session-modal]))
+
 (defn page []
   [:div
-   ;;registration modal test
-   [reg/registration-form]
+   [modal]
    [(pages (session/get :page))]])
 
 ;; -------------------------
