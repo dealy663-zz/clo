@@ -78,7 +78,8 @@
      :compiler
      {:output-to "target/cljsbuild/public/js/app.js"
       :output-dir "target/uberjar"
-      :externs ["react/externs/react.js"]
+      :externs ["react/externs/react.js"
+                "resources/externs.js"]
       :optimizations :advanced
       :pretty-print false
       :closure-warnings

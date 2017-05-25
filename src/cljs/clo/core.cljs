@@ -7,6 +7,7 @@
             [markdown.core :refer [md->html]]
             [clo.ajax :refer [load-interceptors!]]
             [ajax.core :refer [GET POST]]
+            [clo.components.sidebar :as sbar]
             [clo.components.common :as c]
             [clo.components.registration :as reg])
   (:import goog.History))
@@ -48,23 +49,29 @@
     [:div.col-md-12
      "this is the story of clo... work in progress"]]])
 
-(defn home-page []
-  [:div.container
-   [:div.jumbotron
-    [:h1 "Welcome to clo"]
-    [:p "Time to start building your site!"]
-    [:p [:a.btn.btn-primary.btn-lg {:href "http://luminusweb.net"} "Learn more »"]]]
-   [:div.row
-    [:div.col-md-12
-     [:h2 "Welcome to ClojureScript"]]]
-   (when-let [docs (session/get :docs)]
-     [:div.row
-      [:div.col-md-12
-       [:div {:dangerouslySetInnerHTML
-              {:__html (md->html docs)}}]]])])
+;(defn home-page []
+;  [:div.container
+;   [:div.jumbotron
+;    [:h1 "Welcome to clo"]
+;    [:p "Time to start building your site!"]
+;    [:p [:a.btn.btn-primary.btn-lg {:href "http://luminusweb.net"} "Learn more »"]]]
+;   [:div.row
+;    [:div.col-md-12
+;     [:h2 "Welcome to ClojureScript"]]]
+;   (when-let [docs (session/get :docs)]
+;     [:div.row
+;      [:div.col-md-12
+;       [:div {:dangerouslySetInnerHTML
+;              {:__html (md->html docs)}}]]])])
+
+(defn home []
+  [:div#wrapper.toggled
+   [sbar/sidebar]
+   [:div.page-content-wrapper>div.container-fluid>div.row>div.col-lg-12
+    [sbar/menu-toggle]]])
 
 (def pages
-  {:home #'home-page
+  {:home #'home
    :about #'about-page})
 
 ;(defn page []
